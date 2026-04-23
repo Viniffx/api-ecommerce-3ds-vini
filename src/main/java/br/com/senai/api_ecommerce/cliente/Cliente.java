@@ -1,12 +1,14 @@
 package br.com.senai.api_ecommerce.cliente;
 
+import br.com.senai.api_ecommerce.endereco.DadosAtualizarEndereco;
+import br.com.senai.api_ecommerce.endereco.Endereco;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Table(name="clientes") // nome da table no banco de dados
+@Table(name="clientes")
 @Entity(name="Cliente")
 @Getter
 @NoArgsConstructor
@@ -24,12 +26,16 @@ public class Cliente {
     private String telefone;
     private boolean ativo;
 
+    @Embedded // indica que os atributos da classe Endereco serão incorporados na tabela Cliente
+    private Endereco endereco;
+
     public Cliente(DadosCadastroCliente dados) {
         this.nome = dados.nome();
         this.email = dados.email();
         this.cpf = dados.cpf();
         this.telefone = dados.telefone();
         this.ativo = true;
+        this.endereco = new Endereco(dados.endereco());
     }
 
     public void atualizarCliente(DadosAtualizarCliente dados) {
@@ -37,6 +43,11 @@ public class Cliente {
             this.nome = dados.nome();
         if(dados.email() != null && !dados.email().isBlank())
             this.email = dados.email();
+        if(dados.telefone() != null && !dados.telefone().isBlank())
+            this.telefone = dados.telefone();
+        if(dados.endereco() != null);
+            this.endereco.atualizarEndereco(dados.endereco());
+
     }
 
     public void excluirCliente() {
